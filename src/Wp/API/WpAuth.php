@@ -3,6 +3,9 @@
 namespace Wp\API;
 
 
+/**
+ * Class WpAuth
+ */
 class WpAuth
 {
     const AUTHORIZATION_URL = 'https://public-api.wordpress.com/oauth2/authorize';
@@ -55,6 +58,9 @@ class WpAuth
         $this->client = new Client();
     }
 
+    /**
+     * @return string
+     */
     public function getAuthUrl()
     {
         return self::AUTHORIZATION_URL . '?' . http_build_query(array(
@@ -64,6 +70,11 @@ class WpAuth
             ));
     }
 
+    /**
+     * @param string $code
+     *
+     * @return mixed
+     */
     public function getToken($code)
     {
        return $this->client->post('/oauth2/token', array(

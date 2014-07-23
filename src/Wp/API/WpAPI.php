@@ -3,6 +3,9 @@
 namespace Wp\API;
 
 
+/**
+ * Class WpAPI
+ */
 class WpAPI
 {
     /**
@@ -10,6 +13,9 @@ class WpAPI
      */
     private $client;
 
+    /**
+     * @param string $accessToken
+     */
     public function __construct($accessToken)
     {
         $this->client = new Client();
@@ -18,16 +24,33 @@ class WpAPI
         ));
     }
 
+    /**
+     * @param string $path
+     * @param array  $params
+     *
+     * @return mixed
+     */
     public function get($path, array $params = array())
     {
         return $this->client->get($this->preparePath($path), $params);
     }
 
+    /**
+     * @param string $path
+     * @param array  $params
+     *
+     * @return mixed
+     */
     public function post($path, array $params = array())
     {
         return $this->client->post($this->preparePath($path), $params);
     }
 
+    /**
+     * @param string $partPath
+     *
+     * @return mixed
+     */
     private function preparePath($partPath)
     {
         return str_replace('//', '/', '/rest/v1/' . $partPath);

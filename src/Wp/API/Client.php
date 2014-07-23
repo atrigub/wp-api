@@ -9,6 +9,7 @@ use GuzzleHttp\Message\Request;
 
 use Wp\API\Exception\WpApiException;
 
+
 /**
  * Class Client
  */
@@ -48,6 +49,13 @@ class Client
         $this->headers = $headers;
     }
 
+
+    /**
+     * @param string $path
+     * @param array  $params
+     *
+     * @return mixed
+     */
     public function post($path, array $params = array())
     {
         $url = $this->prepareUrl($path);
@@ -59,6 +67,12 @@ class Client
         return $this->makeRequest($request);
     }
 
+    /**
+     * @param string $path
+     * @param array  $queryParams
+     *
+     * @return mixed
+     */
     public function get($path, array $queryParams = array())
     {
         $url = $this->prepareUrl($path);
