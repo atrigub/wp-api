@@ -14,11 +14,18 @@ class WpAPI
     private $client;
 
     /**
-     * @param string $accessToken
+     * Init client
      */
-    public function __construct($accessToken)
+    public function __construct()
     {
         $this->client = new Client();
+    }
+
+    /**
+     * @param string $accessToken
+     */
+    public function setAccessToken($accessToken)
+    {
         $this->client->setHeaders(array(
             'Authorization' => 'Bearer ' . $accessToken
         ));
