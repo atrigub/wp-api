@@ -1,0 +1,23 @@
+{
+    "name": "atrigub/wp-api",
+    "description": "Wordpres API library",
+    "keywords": ["wordpres", "api"],
+    "type": "library",
+    "homepage": "https://github.com/atrigub/wp-api",
+    "license": "Apache2",
+    "authors": [
+        {
+            "name": "Alex Trigub",
+            "homepage": "https://github.com/atrigub/wp-api/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.2.0",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "4.*"
+    },
+    "autoload": {
+        "classmap": ["src"]
+    }
+}
