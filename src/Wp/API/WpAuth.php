@@ -66,7 +66,8 @@ class WpAuth
         return self::AUTHORIZATION_URL . '?' . http_build_query(array(
                 'client_id' => $this->clientId,
                 'redirect_uri' => $this->redirectUrl,
-                'response_type' => $this->responseType
+                'response_type' => $this->responseType,
+                'scope' => $this->scope
             ));
     }
 
