@@ -23,6 +23,29 @@ class StreamHttpClient
     protected $responseHttpStatusCode = 0;
 
     /**
+     * @var array
+     */
+    protected $queryParams = array();
+
+    /**
+     * @var array
+     */
+    protected $requestParams = array();
+
+    /**
+     * @param array $queryParams
+     */
+    public function setQueryParams(array $queryParams)
+    {
+        $this->queryParams = $queryParams;
+    }
+
+    public function setRequestParams(array $requestParams)
+    {
+        $this->requestParams = $requestParams;
+    }
+
+    /**
      * @param string $key
      * @param string $value
      */
@@ -52,13 +75,12 @@ class StreamHttpClient
      *
      * @param string $url
      * @param string $method
-     * @param array  $parameters
      *
      * @return string
      *
      * @throws WpApiException
      */
-    public function sendRequest($url, $method = 'GET', $parameters = array())
+    public function sendRequest($url, $method = 'GET')
     {
         $options = array(
             'http' => array(
@@ -68,9 +90,13 @@ class StreamHttpClient
             )
         );
 
-        if ($parameters) {
+        if ($this->requestParams !== array()) {
             $this->addRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            $options['http']['content'] = http_build_query($parameters, null, '&');
+            $options['http']['content'] = http_build_query($this->requestParams, null, '&');
+        }
+
+        if ($this->queryParams !== array()) {
+            $url .= '?' . http_build_query($this->queryParams, null, '&');
         }
 
         $options['http']['header'] = $this->buildHeader();

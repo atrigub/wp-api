@@ -51,6 +51,7 @@ class Client
     public function post($path, array $params = array())
     {
         $url = $this->prepareUrl($path);
+        $this->client->setRequestParams($params);
 
         return $this->makeRequest($url, 'POST', $params);
     }
@@ -64,6 +65,7 @@ class Client
     public function get($path, array $params = array())
     {
         $url = $this->prepareUrl($path);
+        $this->client->setQueryParams($params);
 
         return $this->makeRequest($url, 'GET', $params);
     }
@@ -83,14 +85,13 @@ class Client
     /**
      * @param string $url
      * @param string $methods
-     * @param array  $params
      *
      * @return string
      * @throws WpApiException
      */
-    private function makeRequest($url, $methods, array $params)
+    private function makeRequest($url, $methods)
     {
-        $response = $this->client->sendRequest($url, $methods, $params);
+        $response = $this->client->sendRequest($url, $methods);
 
         return json_decode($response, true);
     }
