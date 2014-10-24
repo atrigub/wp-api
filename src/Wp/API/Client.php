@@ -2,11 +2,6 @@
 
 namespace Wp\API;
 
-
-use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Message\Request;
-
 use Wp\API\Exception\WpApiException;
 
 
@@ -21,21 +16,16 @@ class Client
     private $url = 'https://public-api.wordpress.com';
 
     /**
-     * @var \GuzzleHttp\Client
+     * @var StreamHttpClient
      */
     private $client;
-
-    /**
-     * @var array
-     */
-    private $headers = array();
 
     /**
      * @param string $url
      */
     public function __construct($url = '')
     {
-        $this->client = new GuzzleClient();
+        $this->client = new StreamHttpClient();
         if ($url !== '') {
             $this->url = $url;
         }
@@ -46,7 +36,9 @@ class Client
      */
     public function setHeaders(array $headers)
     {
-        $this->headers = $headers;
+        foreach ($headers as $key => $value) {
+            $this->client->addRequestHeader($key, $value);
+        }
     }
 
 
@@ -60,27 +52,20 @@ class Client
     {
         $url = $this->prepareUrl($path);
 
-        $request = $this->client->createRequest('POST', $url, array(
-            'body' => $params
-        ));
-
-        return $this->makeRequest($request);
+        return $this->makeRequest($url, 'POST', $params);
     }
 
     /**
      * @param string $path
-     * @param array  $queryParams
+     * @param array  $params
      *
      * @return mixed
      */
-    public function get($path, array $queryParams = array())
+    public function get($path, array $params = array())
     {
         $url = $this->prepareUrl($path);
 
-        $request = $this->client->createRequest('GET', $url);
-        $request->setQuery($queryParams);
-
-        return $this->makeRequest($request);
+        return $this->makeRequest($url, 'GET', $params);
     }
 
     /**
@@ -96,25 +81,17 @@ class Client
     }
 
     /**
-     * @param Request $request
+     * @param string $url
+     * @param string $methods
+     * @param array  $params
      *
-     * @return mixed
-     * @throws Exception\WpApiException
+     * @return string
+     * @throws WpApiException
      */
-    private function makeRequest(Request $request)
+    private function makeRequest($url, $methods, array $params)
     {
-        $request->addHeaders($this->headers);
-        try {
-            $response = $this->client->send($request);
+        $response = $this->client->sendRequest($url, $methods, $params);
 
-            return $response->json();
-        } catch (ClientException $e) {
-            throw new WpApiException(array(
-                'error_code' => intval($e->getResponse()->getStatusCode()),
-                'error' => array(
-                    'message' => $e->getResponse()->getReasonPhrase(),
-                ),
-            ));
-        }
+        return json_decode($response, true);
     }
 } 

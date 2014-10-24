@@ -27,7 +27,7 @@ class WpAPI
     public function setAccessToken($accessToken)
     {
         $this->client->setHeaders(array(
-            'Authorization' => 'Bearer ' . $accessToken
+            'authorization' => 'bearer ' . $accessToken
         ));
     }
 

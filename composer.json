@@ -14,8 +14,7 @@
     "require": {
         "php": ">=5.2.0",
         "ext-curl": "*",
-        "ext-json": "*",
-        "guzzlehttp/guzzle": "4.*"
+        "ext-json": "*"
     },
     "autoload": {
         "classmap": ["src"]
