@@ -91,8 +91,18 @@ class Client
      */
     private function makeRequest($url, $methods)
     {
-        $response = $this->client->sendRequest($url, $methods);
+        $responseString = $this->client->sendRequest($url, $methods);
+        $response = json_decode($responseString, true);
 
-        return json_decode($response, true);
+        if (array_key_exists('error', $response)) {
+            throw new WpApiException(array(
+                'error_code' => $this->client->getResponseHttpStatusCode(),
+                'error' => array(
+                    'message' => $response['error'],
+                ),
+            ));
+        }
+
+        return $response;
     }
 } 
