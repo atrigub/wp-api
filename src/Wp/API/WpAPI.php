@@ -9,6 +9,11 @@ namespace Wp\API;
 class WpAPI
 {
     /**
+     * @var string
+     */
+    private $version = 'v1';
+
+    /**
      * @var Client
      */
     private $client;
@@ -29,6 +34,14 @@ class WpAPI
         $this->client->setHeaders(array(
             'authorization' => 'bearer ' . $accessToken
         ));
+    }
+
+    /**
+     * @param string $version
+     */
+    public function setApiVersion($version)
+    {
+        $this->version = $version;
     }
 
     /**
@@ -60,6 +73,8 @@ class WpAPI
      */
     private function preparePath($partPath)
     {
-        return str_replace('//', '/', '/rest/v1/' . $partPath);
+        $path = ltrim($partPath, '/');
+
+        return sprintf('/rest/%s/%s', $this->version, $path);
     }
 }
