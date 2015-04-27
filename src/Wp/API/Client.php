@@ -94,7 +94,7 @@ class Client
         $responseString = $this->client->sendRequest($url, $methods);
         $response = json_decode($responseString, true);
 
-        if (array_key_exists('error', $response)) {
+        if (is_array($response) && array_key_exists('error', $response)) {
             throw new WpApiException(array(
                 'error_code' => $this->client->getResponseHttpStatusCode(),
                 'error' => array(
