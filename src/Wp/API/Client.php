@@ -3,6 +3,7 @@
 namespace Wp\API;
 
 use Wp\API\Exception\WpApiException;
+use Wp\API\HttpClients\CurlHttpClient;
 
 
 /**
@@ -16,7 +17,7 @@ class Client
     private $url = 'https://public-api.wordpress.com';
 
     /**
-     * @var StreamHttpClient
+     * @var CurlHttpClient
      */
     private $client;
 
@@ -25,7 +26,7 @@ class Client
      */
     public function __construct($url = '')
     {
-        $this->client = new StreamHttpClient();
+        $this->client = new CurlHttpClient();
         if ($url !== '') {
             $this->url = $url;
         }
@@ -51,7 +52,6 @@ class Client
     public function post($path, array $params = array())
     {
         $url = $this->prepareUrl($path);
-        $this->client->setRequestParams($params);
 
         return $this->makeRequest($url, 'POST', $params);
     }
@@ -65,9 +65,9 @@ class Client
     public function get($path, array $params = array())
     {
         $url = $this->prepareUrl($path);
-        $this->client->setQueryParams($params);
+        $url .= '?' . http_build_query($params, null, '&');
 
-        return $this->makeRequest($url, 'GET', $params);
+        return $this->makeRequest($url, 'GET', array());
     }
 
     /**
@@ -85,13 +85,14 @@ class Client
     /**
      * @param string $url
      * @param string $methods
+     * @param array  $params
      *
      * @return string
      * @throws WpApiException
      */
-    private function makeRequest($url, $methods)
+    private function makeRequest($url, $methods, array $params = array())
     {
-        $responseString = $this->client->sendRequest($url, $methods);
+        $responseString = $this->client->send($url, $methods, $params);
         $response = json_decode($responseString, true);
 
         if (is_array($response) && array_key_exists('error', $response)) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Wp\API;
+namespace Wp\API\HttpClients;
 
 
 use Wp\API\Exception\WpApiException;
@@ -22,28 +22,6 @@ class StreamHttpClient
      */
     protected $responseHttpStatusCode = 0;
 
-    /**
-     * @var array
-     */
-    protected $queryParams = array();
-
-    /**
-     * @var array
-     */
-    protected $requestParams = array();
-
-    /**
-     * @param array $queryParams
-     */
-    public function setQueryParams(array $queryParams)
-    {
-        $this->queryParams = $queryParams;
-    }
-
-    public function setRequestParams(array $requestParams)
-    {
-        $this->requestParams = $requestParams;
-    }
 
     /**
      * @param string $key
@@ -75,12 +53,13 @@ class StreamHttpClient
      *
      * @param string $url
      * @param string $method
+     * @param array  $params
      *
      * @return string
      *
      * @throws WpApiException
      */
-    public function sendRequest($url, $method = 'GET')
+    public function send($url, $method = 'GET', array $params = array())
     {
         $options = array(
             'http' => array(
@@ -90,13 +69,9 @@ class StreamHttpClient
             )
         );
 
-        if ($this->requestParams !== array()) {
+        if ($params !== array()) {
             $this->addRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            $options['http']['content'] = http_build_query($this->requestParams, null, '&');
-        }
-
-        if ($this->queryParams !== array()) {
-            $url .= '?' . http_build_query($this->queryParams, null, '&');
+            $options['http']['content'] = http_build_query($params, null, '&');
         }
 
         $options['http']['header'] = $this->buildHeader();
