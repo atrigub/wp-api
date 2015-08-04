@@ -93,12 +93,13 @@ class CurlHttpClient
     }
 
     /**
-     * @param string $url The endpoint to send the request to
-     * @param string $method The request method
-     * @param array  $parameters The key value pairs to be sent in the body
+     * @param string $url
+     * @param string $method
+     * @param array  $parameters
      *
-     * @return string Raw response from the server
+     * @return string
      *
+     * @throws WpApiException
      */
     public function send($url, $method = 'GET', $parameters = array())
     {
@@ -125,9 +126,9 @@ class CurlHttpClient
     /**
      * Opens a new curl connection
      *
-     * @param string $url The endpoint to send the request to
-     * @param string $method The request method
-     * @param array  $parameters The key value pairs to be sent in the body
+     * @param string $url
+     * @param string $method
+     * @param array  $parameters
      */
     public function openConnection($url, $method = 'GET', array $parameters = array())
     {
@@ -279,7 +280,6 @@ class CurlHttpClient
         $headerSize = $this->curlWrapper->getinfo(CURLINFO_HEADER_SIZE);
 
         if ( $this->needsCurlProxyFix() ) {
-            // Additional way to calculate the request body size.
             if (preg_match('/Content-Length: (\d+)/', $this->rawResponse, $m)) {
                 $headerSize = mb_strlen($this->rawResponse) - $m[1];
             } elseif (stripos($this->rawResponse, self::CONNECTION_ESTABLISHED) !== false) {
