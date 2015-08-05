@@ -314,7 +314,7 @@ class CurlHttpClient
     private function paramsHaveFile(array $params)
     {
         foreach ($params as $value) {
-            if ($value instanceof \CURLFile) {
+            if ($value instanceof \CURLFile || strpos($value, '@') !== false) {
                 return true;
             }
         }
